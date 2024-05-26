@@ -16,9 +16,9 @@ jobs:
           distribution: 'microsoft'
       - id: get-project
         name: Get project name
-        run: echo "PROJECT::$(cat project-to-build)" >> $GITHUB_OUTPUT
+        run: echo "PROJECT=$(cat project-to-build)" >> $GITHUB_ENV
       - name: Clone project
-        run: git clone --depth=1 ${{ steps.get-project.outputs.PROJECT }} project
+        run: git clone --depth=1 ${{ env.PROJECT }} project
       - name: Build the app
         working-directory: ./project
         run: |
@@ -26,8 +26,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug --stacktrace
       - name: Upload APK
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: my-build-apk
-          path: ./**/*.apk
-
+          path: '**/*.apk'
